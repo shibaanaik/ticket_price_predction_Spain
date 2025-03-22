@@ -1,0 +1,51 @@
+{
+    "origin": [
+        "BARCELONA",
+        "MADRID",
+        "PONFERRADA",
+        "SEVILLA",
+        "VALENCIA"
+    ],
+    "destination": [
+        "BARCELONA",
+        "MADRID",
+        "PONFERRADA",
+        "SEVILLA",
+        "VALENCIA"
+    ],
+    "train_type": [
+        "ALVIA",
+        "AV City",
+        "AVE",
+        "AVE-LD",
+        "AVE-MD",
+        "AVE-TGV",
+        "INTERCITY",
+        "LD",
+        "LD-AVE",
+        "LD-MD",
+        "MD",
+        "MD-AVE",
+        "MD-LD",
+        "R. EXPRES",
+        "REGIONAL",
+        "TRENHOTEL"
+    ],
+    "train_class": [
+        "Cama G. Clase",
+        "Cama Turista",
+        "Preferente",
+        "Turista",
+        "Turista Plus",
+        "Turista con enlace"
+    ],
+    "fare": [
+        "Adulto ida",
+        "Flexible",
+        "Grupos Ida",
+        "Individual-Flexible",
+        "Mesa",
+        "Promo",
+        "Promo +"
+    ]
+}
