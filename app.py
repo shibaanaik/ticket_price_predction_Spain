@@ -76,7 +76,14 @@ if st.button("Predict Price"):
     # Apply Label Encoding
     categorical_cols = ["origin", "destination", "train_type", "train_class", "fare"]
     for col in categorical_cols:
-        input_data[col] = input_data[col].astype(str).str.strip()
+    input_data[col] = input_data[col].astype(str).str.strip()  # Ensure consistent formatting
+
+    if input_data[col].values[0] in label_mappings[col]:  
+        input_data[col] = label_mappings[col][input_data[col].values[0]]  # Convert using dictionary
+    else:
+        st.error(f"Error: '{input_data[col].values[0]}' is not recognized in '{col}'. Available options: {list(label_mappings[col].keys())}")
+        st.stop()
+
 
         # Get original label encoder classes
         encoder_classes = [str(cls) for cls in label_encoders[col].classes_]
