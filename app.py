@@ -43,7 +43,7 @@ if os.path.exists(encoder_path):
     label_encoders = joblib.load(encoder_path)
     st.success("✅ Label encoders loaded successfully!")
 else:
-    st.error("🚨 Label encoders file 'label_encoders.pkl' not found! Please train and save the encoders first.")
+    st.error("🚨 Label encoder file 'label_encoders.pkl' not found! Please train and save the encoders first.")
     st.stop()
 
 # Predefined lists (must match those used in training)
@@ -77,18 +77,17 @@ if st.button("Predict Price"):
             try:
                 input_data[col] = label_encoders[col].transform([input_data[col].values[0]])[0]
             except ValueError:
-                st.warning(f" Warning: The value '{input_data[col].values[0]}' for '{col}' was not seen during training. Assigning a default value.")
+                st.warning(f"⚠️ Warning: The value '{input_data[col].values[0]}' for '{col}' was not seen during training. Assigning a default value.")
                 input_data[col] = label_encoders[col].transform([label_encoders[col].classes_[0]])[0]  # Assign first known value
         else:
             st.error(f"🚨 Error: '{col}' encoder is missing in 'label_encoders.pkl'. Retrain the model with all categorical columns encoded.")
             st.stop()
 
-    # Convert input to numpy array and reshape
-     input_array = input_data.values.reshape(1, -1)
+    # Make sure input matches the model's feature names
+    input_data.columns = model.feature_names_in_
 
     # Make Prediction
-    predicted_price = model.predict(input_array)
+    predicted_price = model.predict(input_data)
 
-    
     # Show Result
-    st.success(f" Estimated Ticket Price: €{predicted_price[0]:.2f}")
+    st.success(f"💰 Estimated Ticket Price: €{predicted_price[0]:.2f}")
