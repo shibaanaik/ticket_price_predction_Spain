@@ -83,11 +83,12 @@ if st.button("Predict Price"):
             st.error(f"🚨 Error: '{col}' encoder is missing in 'label_encoders.pkl'. Retrain the model with all categorical columns encoded.")
             st.stop()
 
-    # Convert input to numpy array and reshape
-    input_array = input_data.values.reshape(1, -1)
+    # Ensure input is a DataFrame with column names
+    input_data = pd.DataFrame([[origin, destination, train_type, train_class, fare, travel_duration]],
+                          columns=["origin", "destination", "train_type", "train_class", "fare", "travel_duration"])
 
-    # Make Prediction
-    predicted_price = model.predict(input_array)
+    # Make Prediction (Keep DataFrame format)
+    predicted_price = model.predict(input_data)
 
     # Show Result
     st.success(f" Estimated Ticket Price: €{predicted_price[0]:.2f}")
