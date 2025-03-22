@@ -42,10 +42,10 @@ st.title("🚆 Train Ticket Price Predictor")
 # Predefined lists (must match those used in training)
 origins = ["madrid", "barcelona", "valencia", "seville", "silbao"]
 destinations = ["madrid", "barcelona", "valencia", "seville", "bilbao"]
-train_types = ["AVE", "Alvia", "Intercity", "Regional", "AV City", "MD-LD", "LD", "AVE-TGV", "AVE-MD",
-               "R. EXPRES", "AVE-LD", "LD-MD", "TRENHOTEL", "MD-AVE", "MD", "LD-AVE"]
-train_classes = ["Turista", "Preferente", "Club", "Turista Plus", "Turista con enlace", "Cama Turista", "Cama G. Clase"]
-fare_types = ["Promo", "Flexible", "Adulto ida", "Promo +", "Individual Flexible", "Mesa", "Grupos Ida"]
+train_types = ["ave", "alvia", "intercity", "regional", "av city", "md-ld", "ld", "ave-tge", "ave-md",
+               "r. expres", "ave-ld", "ld-md", "trenhotel", "md-ave", "md", "ld-ave"]
+train_classes = ["turista", "preferente", "club", "turista plus", "turista con enlace", "cama turista", "cama g. clase"]
+fare_types = ["promo", "flexible", "adulto ida", "promo +", "individual flexible", "mesa", "grupos ida"]
 
 # User Inputs
 origin = st.selectbox("Select Origin Station:", origins)
