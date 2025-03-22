@@ -1,11 +1,10 @@
 import streamlit as st
+import joblib  # For loading the trained model
 import json
 import base64
 import pandas as pd
-import numpy as np
-from sklearn.ensemble import RandomForestRegressor
 
-# Function to set background
+# Load background image
 def set_background(image_file):
     page_bg_img = f"""
     <style>
@@ -17,35 +16,34 @@ def set_background(image_file):
     """
     st.markdown(page_bg_img, unsafe_allow_html=True)
 
-# Load and encode background image
 def get_base64_image(image_path):
     with open(image_path, "rb") as img_file:
         return base64.b64encode(img_file.read()).decode()
 
-# Load Background Image
-image_path = "background.jpg"  # Ensure this file exists
+image_path = "background.jpg"
 set_background(get_base64_image(image_path))
 
-# Load model parameters from JSON file
-with open("train_price_model_params.json", "r") as f:
-    params = json.load(f)
-
-# Load label mappings from JSON
+# Load label mappings
 with open("label_mappings.json", "r") as f:
     label_mappings = json.load(f)
 
-# Rebuild the Random Forest model using saved parameters
-model = RandomForestRegressor(**params)
+# ✅ Load trained model
+try:
+    model = joblib.load("train_price_model.pkl")  # Ensure the trained model exists in this path
+except FileNotFoundError:
+    st.error("🚨 Model file 'train_price_model.pkl' not found! Please train and save the model first.")
+    st.stop()
 
 st.title("🚆 Train Ticket Price Predictor")
 
-# Predefined lists (must match those used in training)
+# Dropdown options (Ensure these match training data)
 origins = ["madrid", "barcelona", "valencia", "seville", "bilbao"]
 destinations = ["madrid", "barcelona", "valencia", "seville", "bilbao"]
 train_types = ["ave", "alvia", "intercity", "regional", "av city", "md-ld", "ld", "ave-tge", "ave-md",
                "r. expres", "ave-ld", "ld-md", "trenhotel", "md-ave", "md", "ld-ave"]
 train_classes = ["turista", "preferente", "club", "turista plus", "turista con enlace", "cama turista", "cama g. clase"]
 fare_types = ["promo", "flexible", "adulto ida", "promo +", "individual flexible", "mesa", "grupos ida"]
+
 
 # User Inputs
 origin = st.selectbox("Select Origin Station:", origins)
@@ -72,7 +70,7 @@ if st.button("Predict Price"):
             st.error(f"🚨 Error: '{input_data[col].values[0]}' is not recognized in '{col}'. Available options: {list(label_mappings[col].keys())}")
             st.stop()
 
-    # Make Prediction
+    # ✅ Make Prediction (Model is now loaded)
     predicted_price = model.predict(input_data)
 
     # Show Result
