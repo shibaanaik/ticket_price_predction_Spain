@@ -38,6 +38,9 @@ else:
     st.stop()
 
 # Load label encoders
+# Define categorical columns before using them
+categorical_cols = ["origin", "destination", "train_type", "train_class", "fare"]
+
 for col in categorical_cols:
     if col in label_encoders:
         try:
@@ -46,7 +49,7 @@ for col in categorical_cols:
             st.warning(f"⚠️ Warning: The value '{input_data[col].values[0]}' for '{col}' was not seen during training. Assigning a default value.")
             input_data[col] = label_encoders[col].transform([label_encoders[col].classes_[0]])[0]  # Assign first known value
     else:
-        st.error(f"Error: '{col}' encoder is missing in 'label_encoders.pkl'. Retrain the model with all categorical columns encoded.")
+        st.error(f"🚨 Error: '{col}' encoder is missing in 'label_encoders.pkl'. Retrain the model with all categorical columns encoded.")
         st.stop()
 
 # Predefined lists (must match those used in training)
