@@ -34,8 +34,18 @@ with open("train_price_model_params.json", "r") as f:
 # Rebuild the Random Forest model using saved parameters
 model = RandomForestRegressor(**params)
 
-# Load label encoders
-label_encoders = json.load(open("label_encoders.json", "r"))
+# Load label encoders from JSON
+with open("label_encoders.json", "r") as f:
+    label_classes = json.load(f)
+
+# Rebuild the label encoders
+label_encoders = {}
+for col, classes in label_classes.items():
+    le = LabelEncoder()
+    le.classes_ = np.array(classes)  # Restore encoder classes
+    label_encoders[col] = le
+
+print("✅ Label encoders successfully loaded!")
 
 # Predefined lists
 origins = ["Madrid", "Barcelona", "Valencia", "Seville", "Bilbao"]
@@ -46,7 +56,7 @@ train_classes = ["Turista", "Preferente", "Club", "Turista Plus", "Turista con e
 fare_types = ["Promo", "Flexible", "Adulto ida", "Promo +", "Individual Flexible", "Mesa", "Grupos Ida"]
 
 # Streamlit App
-st.title("🚆 Train Ticket Price Predictor")
+st.title("🚆Train Ticket Price Predictor")
 
 # User Inputs
 origin = st.selectbox("Select Origin Station:", origins)
