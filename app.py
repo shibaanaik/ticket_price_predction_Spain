@@ -38,13 +38,16 @@ else:
     st.stop()
 
 # Load label encoders
-label_encoders_path = "label_encoders.pkl"
-if os.path.exists(label_encoders_path):
-    label_encoders = joblib.load(label_encoders_path)
-    st.success("✅ Label Encoders loaded successfully!")
-else:
-    st.error("🚨 Label encoders file 'label_encoders.pkl' not found! Please train and save the label encoders.")
-    st.stop()
+for col in categorical_cols:
+    if col in label_encoders:
+        try:
+            input_data[col] = label_encoders[col].transform([input_data[col].values[0]])[0]
+        except ValueError:
+            st.warning(f"⚠️ Warning: The value '{input_data[col].values[0]}' for '{col}' was not seen during training. Assigning a default value.")
+            input_data[col] = label_encoders[col].transform([label_encoders[col].classes_[0]])[0]  # Assign first known value
+    else:
+        st.error(f"Error: '{col}' encoder is missing in 'label_encoders.pkl'. Retrain the model with all categorical columns encoded.")
+        st.stop()
 
 # Predefined lists (must match those used in training)
 origins = ["Madrid", "Barcelona", "Valencia", "Seville", "Bilbao"]
