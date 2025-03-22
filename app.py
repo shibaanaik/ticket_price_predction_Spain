@@ -56,7 +56,7 @@ train_classes = ["Turista", "Preferente", "Club", "Turista Plus", "Turista con e
 fare_types = ["Promo", "Flexible", "Adulto ida", "Promo +", "Individual Flexible", "Mesa", "Grupos Ida"]
 
 # Streamlit App
-st.title("🚆Train Ticket Price Predictor")
+st.title("🚆 Train Ticket Price Predictor")
 
 # User Inputs
 origin = st.selectbox("Select Origin Station:", origins)
@@ -74,7 +74,7 @@ if st.button("Predict Price"):
     # Apply Label Encoding
     categorical_cols = ["origin", "destination", "train_type", "train_class", "fare"]
     for col in categorical_cols:
-        input_data[col] = label_encoders[col].transform(input_data[col])
+        input_data[col] = label_encoders[col].transform(input_data[col].astype(str))
 
     # Make Prediction
     predicted_price = model.predict(input_data)
