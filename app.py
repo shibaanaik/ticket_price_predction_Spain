@@ -24,13 +24,12 @@ def get_base64_image(image_path):
         return base64.b64encode(img_file.read()).decode()
 
 # Load Background Image
-image_path = "background.jpg"  # Ensure this file exists in the same directory
+image_path = "background.jpg"
 if os.path.exists(image_path):
     set_background(get_base64_image(image_path))
 
 # Load the trained model
 model_path = "train_price_model.pkl"
-
 if os.path.exists(model_path):
     model = joblib.load(model_path)
     st.success("✅ Model loaded successfully!")
@@ -39,9 +38,14 @@ else:
     st.stop()
 
 # Load label encoders
-label_encoders = joblib.load("label_encoders.pkl") if os.path.exists("label_encoders.pkl") else {}
+label_encoders_path = "label_encoders.pkl"
+if os.path.exists(label_encoders_path):
+    label_encoders = joblib.load(label_encoders_path)
+    st.success("✅ Label Encoders loaded successfully!")
+else:
+    st.error("🚨 Label encoders file 'label_encoders.pkl' not found! Please train and save the label encoders.")
+    st.stop()
 
-# Predefined lists
 # Predefined lists (must match those used in training)
 origins = ["madrid", "barcelona", "valencia", "seville", "bilbao"]
 destinations = ["madrid", "barcelona", "valencia", "seville", "bilbao"]
@@ -49,7 +53,6 @@ train_types = ["ave", "alvia", "intercity", "regional", "av city", "md-ld", "ld"
                "r. expres", "ave-ld", "ld-md", "trenhotel", "md-ave", "md", "ld-ave"]
 train_classes = ["turista", "preferente", "club", "turista plus", "turista con enlace", "cama turista", "cama g. clase"]
 fare_types = ["promo", "flexible", "adulto ida", "promo +", "individual flexible", "mesa", "grupos ida"]
-
 
 # Streamlit App
 st.title("🚆 Train Ticket Price Predictor")
@@ -73,11 +76,14 @@ if st.button("Predict Price"):
         if col in label_encoders:
             input_data[col] = label_encoders[col].transform([input_data[col].values[0]])[0]
         else:
-            st.error(f"🚨 Error: '{col}' encoder is missing. Please retrain and save label encoders.")
+            st.error(f"Error: '{col}' encoder is missing in 'label_encoders.pkl'. Retrain the model with all categorical columns encoded.")
             st.stop()
 
+    # Convert input to numpy array and reshape
+    input_array = input_data.values.reshape(1, -1)
+
     # Make Prediction
-    predicted_price = model.predict([input_data.iloc[0]])  # Convert to list
+    predicted_price = model.predict(input_array)
 
     # Show Result
-    st.success(f"Estimated Ticket Price: €{predicted_price[0]:.2f}")
+    st.success(f" Estimated Ticket Price: €{predicted_price[0]:.2f}")
