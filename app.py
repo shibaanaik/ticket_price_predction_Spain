@@ -40,7 +40,7 @@ model = RandomForestRegressor(**params)
 st.title("🚆 Train Ticket Price Predictor")
 
 # Predefined lists (must match those used in training)
-origins = ["madrid", "barcelona", "valencia", "seville", "silbao"]
+origins = ["madrid", "barcelona", "valencia", "seville", "bilbao"]
 destinations = ["madrid", "barcelona", "valencia", "seville", "bilbao"]
 train_types = ["ave", "alvia", "intercity", "regional", "av city", "md-ld", "ld", "ave-tge", "ave-md",
                "r. expres", "ave-ld", "ld-md", "trenhotel", "md-ave", "md", "ld-ave"]
