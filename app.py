@@ -74,8 +74,11 @@ if st.button("Predict Price"):
     # Apply Label Encoding
     categorical_cols = ["origin", "destination", "train_type", "train_class", "fare"]
     for col in categorical_cols:
-        if input_data[col].values[0] in label_encoders[col].classes_:
-            input_data[col] = label_encoders[col].transform(input_data[col].astype(str))
+        input_data[col] = input_data[col].astype(str).str.strip().str.lower()  # Ensure consistency
+        encoder_classes = [cls.lower() for cls in label_encoders[col].classes_]
+        
+        if input_data[col].values[0] in encoder_classes:
+            input_data[col] = label_encoders[col].transform([input_data[col].values[0]])[0]
         else:
             st.error(f"🚨 Error: '{input_data[col].values[0]}' is not in the trained categories for '{col}'. Please select a valid option.")
             st.stop()
