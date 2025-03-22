@@ -75,7 +75,8 @@ if st.button("Predict Price"):
     categorical_cols = ["origin", "destination", "train_type", "train_class", "fare"]
     for col in categorical_cols:
         input_data[col] = input_data[col].astype(str).str.strip().str.lower()  # Ensure consistency
-        encoder_classes = [cls.lower() for cls in label_encoders[col].classes_]
+        encoder_classes = [str(cls).lower() for cls in label_encoders[col].classes_]
+
         
         if input_data[col].values[0] in encoder_classes:
             input_data[col] = label_encoders[col].transform([input_data[col].values[0]])[0]
