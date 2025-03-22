@@ -38,19 +38,13 @@ else:
     st.stop()
 
 # Load label encoders
-# Define categorical columns before using them
-categorical_cols = ["origin", "destination", "train_type", "train_class", "fare"]
-
-for col in categorical_cols:
-    if col in label_encoders:
-        try:
-            input_data[col] = label_encoders[col].transform([input_data[col].values[0]])[0]
-        except ValueError:
-            st.warning(f"⚠️ Warning: The value '{input_data[col].values[0]}' for '{col}' was not seen during training. Assigning a default value.")
-            input_data[col] = label_encoders[col].transform([label_encoders[col].classes_[0]])[0]  # Assign first known value
-    else:
-        st.error(f"🚨 Error: '{col}' encoder is missing in 'label_encoders.pkl'. Retrain the model with all categorical columns encoded.")
-        st.stop()
+encoder_path = "label_encoders.pkl"
+if os.path.exists(encoder_path):
+    label_encoders = joblib.load(encoder_path)
+    st.success("✅ Label encoders loaded successfully!")
+else:
+    st.error("🚨 Label encoders file 'label_encoders.pkl' not found! Please train and save the encoders first.")
+    st.stop()
 
 # Predefined lists (must match those used in training)
 origins = ["Madrid", "Barcelona", "Valencia", "Seville", "Bilbao"]
@@ -59,6 +53,7 @@ train_types = ["AVE", "Alvia", "Intercity", "Regional", "AV City", "MD-LD", "LD"
                "R. EXPRES", "AVE-LD", "LD-MD", "TRENHOTEL", "MD-AVE", "MD", "LD-AVE"]
 train_classes = ["Turista", "Preferente", "Club", "Turista Plus", "Turista con enlace", "Cama Turista", "Cama G. Clase"]
 fare_types = ["Promo", "Flexible", "Adulto ida", "Promo +", "Individual Flexible", "Mesa", "Grupos Ida"]
+
 # Streamlit App
 st.title("🚆 Train Ticket Price Predictor")
 
@@ -79,9 +74,13 @@ if st.button("Predict Price"):
     categorical_cols = ["origin", "destination", "train_type", "train_class", "fare"]
     for col in categorical_cols:
         if col in label_encoders:
-            input_data[col] = label_encoders[col].transform([input_data[col].values[0]])[0]
+            try:
+                input_data[col] = label_encoders[col].transform([input_data[col].values[0]])[0]
+            except ValueError:
+                st.warning(f" Warning: The value '{input_data[col].values[0]}' for '{col}' was not seen during training. Assigning a default value.")
+                input_data[col] = label_encoders[col].transform([label_encoders[col].classes_[0]])[0]  # Assign first known value
         else:
-            st.error(f"Error: '{col}' encoder is missing in 'label_encoders.pkl'. Retrain the model with all categorical columns encoded.")
+            st.error(f"🚨 Error: '{col}' encoder is missing in 'label_encoders.pkl'. Retrain the model with all categorical columns encoded.")
             st.stop()
 
     # Convert input to numpy array and reshape
